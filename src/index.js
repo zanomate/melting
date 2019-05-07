@@ -1,6 +1,5 @@
 import {combineReducers} from './combineReducers'
-import {createStore} from './createStore'
-import {useStore} from './useStore'
+import {createStore, useStore} from './createStore'
 
 export {
     createStore,

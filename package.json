@@ -1,6 +1,6 @@
 {
   "name": "melting",
-  "version": "0.0.4",
+  "version": "0.0.10",
   "description": "Global state manager for React using hooks and Context",
   "license": "MIT",
   "homepage": "https://github.com/zanomate/melting.git",
@@ -33,6 +33,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.4.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.3",
+    "@babel/preset-env": "^7.4.4",
     "@types/react": "^16.8.16",
     "rimraf": "^2.6.3",
     "rollup": "^1.10.1",
