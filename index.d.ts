@@ -1,5 +1,4 @@
 import * as React from 'react'
-import {StoreContextValue} from './lib/context'
 
 export interface State {
     [key: string]: any
@@ -43,7 +42,7 @@ export const createStore: <S>(
 export type StoreSelector<S> = (store: S) => any
 
 export const useStore: <S>(
-    selector: StoreSelector<S>
+    selector?: StoreSelector<S>
 ) => StoreContextValue<S>
 
 export const combineReducers: <S extends State>(

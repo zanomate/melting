@@ -1,6 +1,6 @@
 {
   "name": "melting",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "Global state manager for React using hooks and Context",
   "license": "MIT",
   "homepage": "https://github.com/zanomate/melting.git",
