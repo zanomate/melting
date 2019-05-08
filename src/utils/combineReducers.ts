@@ -1,9 +1,14 @@
-export const combineReducers = (reducers, initialValue) => {
-    const defaultValue = initialValue || {}
+import {Reducer} from 'react'
+
+export const combineReducers = <S,A>(
+    reducers: { [key: string]: Reducer<S,A> },
+    initialValue?: S
+): Reducer<S,A> => {
+    const defaultValue = initialValue
     Object.keys(reducers)
         .forEach((key) => {
             if (!defaultValue.hasOwnProperty(key)) {
-                defaultValue[key] = reducers[key](undefined, {type: undefined})
+                defaultValue[key] = reducers[key](undefined, undefined)
             }
         })
     return (state = defaultValue, action) => {
@@ -13,6 +18,6 @@ export const combineReducers = (reducers, initialValue) => {
                 return nextState
             },
             {}
-        )
+        ) as S
     }
 }
