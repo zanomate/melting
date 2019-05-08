@@ -1,104 +1,39 @@
-import nodeResolve from 'rollup-plugin-node-resolve'
 import babel from 'rollup-plugin-babel'
-import replace from 'rollup-plugin-replace'
-import { terser } from 'rollup-plugin-terser'
+import commonjs from 'rollup-plugin-commonjs'
+import external from 'rollup-plugin-peer-deps-external'
+import postcss from 'rollup-plugin-postcss'
+import resolve from 'rollup-plugin-node-resolve'
+import url from 'rollup-plugin-url'
+import svgr from '@svgr/rollup'
 
 import pkg from './package.json'
 
-export default [
-    // CommonJS
+export default {
+  input: 'src/index.js',
+  output: [
     {
-        input: 'src/index.js',
-        output: { file: 'lib/melting.js', format: 'cjs', indent: false },
-        external: [
-            ...Object.keys(pkg.dependencies || {}),
-            ...Object.keys(pkg.peerDependencies || {})
-        ],
-        plugins: [babel()]
+      file: pkg.main,
+      format: 'cjs',
+      sourcemap: true
     },
-
-    // ES
     {
-        input: 'src/index.js',
-        output: { file: 'es/melting.js', format: 'es', indent: false },
-        external: [
-            ...Object.keys(pkg.dependencies || {}),
-            ...Object.keys(pkg.peerDependencies || {})
-        ],
-        plugins: [babel()]
-    },
-
-    // ES for Browsers
-    {
-        input: 'src/index.js',
-        output: { file: 'es/melting.mjs', format: 'es', indent: false },
-        plugins: [
-            nodeResolve({
-                jsnext: true
-            }),
-            replace({
-                'process.env.NODE_ENV': JSON.stringify('production')
-            }),
-            terser({
-                compress: {
-                    pure_getters: true,
-                    unsafe: true,
-                    unsafe_comps: true,
-                    warnings: false
-                }
-            })
-        ]
-    },
-
-    // UMD Development
-    {
-        input: 'src/index.js',
-        output: {
-            file: 'dist/melting.js',
-            format: 'umd',
-            name: 'Melting',
-            indent: false
-        },
-        plugins: [
-            nodeResolve({
-                jsnext: true
-            }),
-            babel({
-                exclude: 'node_modules/**'
-            }),
-            replace({
-                'process.env.NODE_ENV': JSON.stringify('development')
-            })
-        ]
-    },
-
-    // UMD Production
-    {
-        input: 'src/index.js',
-        output: {
-            file: 'dist/melting.min.js',
-            format: 'umd',
-            name: 'Melting',
-            indent: false
-        },
-        plugins: [
-            nodeResolve({
-                jsnext: true
-            }),
-            babel({
-                exclude: 'node_modules/**'
-            }),
-            replace({
-                'process.env.NODE_ENV': JSON.stringify('production')
-            }),
-            terser({
-                compress: {
-                    pure_getters: true,
-                    unsafe: true,
-                    unsafe_comps: true,
-                    warnings: false
-                }
-            })
-        ]
+      file: pkg.module,
+      format: 'es',
+      sourcemap: true
     }
-]
+  ],
+  plugins: [
+    external(),
+    postcss({
+      modules: true
+    }),
+    url(),
+    svgr(),
+    babel({
+      exclude: 'node_modules/**',
+      plugins: [ 'external-helpers' ]
+    }),
+    resolve(),
+    commonjs()
+  ]
+}

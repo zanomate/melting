@@ -1,6 +1,14 @@
-# useGlobalStore
+# Melting
 
-Global state management with hooks and Context API
+> Global state manager for React, made with hooks and context
+
+[![NPM](https://img.shields.io/npm/v/melting.svg)](https://www.npmjs.com/package/melting) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+
+## Install
+
+```bash
+npm install --save melting
+```
 
 ## Usage
 
@@ -55,3 +63,7 @@ Finally use `useStore` hook to access global store data and dispatch method
         )
     }
 ```
+
+## License
+
+MIT © [https://github.com/zanomate](https://github.com/https://github.com/zanomate)
