@@ -145,6 +145,9 @@ with the same shape of the map of reducers passed to it.
 
 Arguments:
 1. `reducers` (object): the map of reducers to be combined together.
+2. \[`initialValue`\] (any): This parameter is **optional**. If not specify
+the state default value is automatically computed from reducers state default
+state value inside the passed map.
 
 ```js
 const todos = combineReducers({
@@ -155,4 +158,4 @@ const todos = combineReducers({
 
 ## License
 
-MIT © [https://github.com/zanomate](https://github.com/https://github.com/zanomate)
+MIT © [https://github.com/zanomate](https://github.com/zanomate)
