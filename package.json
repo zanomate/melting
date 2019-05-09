@@ -1,19 +1,23 @@
 {
     "name": "melting",
-    "version": "0.0.11",
+    "version": "0.0.14",
     "description": "Global state manager for React, made with hooks and context",
     "author": "https://github.com/zanomate",
     "license": "MIT",
     "repository": "https://github.com/zanomate/melting",
-    "main": "dist/index.js",
-    "module": "dist/index.es.js",
-    "jsnext:main": "dist/index.es.js",
+    "main": "dist/melting.js",
+    "module": "dist/melting.es.js",
+    "jsnext:main": "dist/melting.es.js",
+    "types": "dist/melting.d.ts",
     "engines": {
         "node": ">=8",
         "npm": ">=5"
     },
     "scripts": {
-        "build": "rollup -c",
+        "clean": "rimraf dist melting.d.ts",
+        "rollup": "rollup -c",
+        "dts": "dts-generator --project . --out dist/melting.d.ts",
+        "build": "npm run clean && npm run rollup && npm run dts",
         "start": "rollup -c -w"
     },
     "peerDependencies": {
@@ -29,10 +33,12 @@
         "babel-core": "^6.26.3",
         "babel-runtime": "^6.26.0",
         "cross-env": "^5.1.4",
+        "dts-generator": "^3.0.0",
         "gh-pages": "^1.2.0",
         "react": "^16.4.1",
         "react-dom": "^16.4.1",
         "react-scripts-ts": "^2.16.0",
+        "rimraf": "^2.6.3",
         "rollup": "^0.62.0",
         "rollup-plugin-babel": "^3.0.7",
         "rollup-plugin-commonjs": "^9.1.3",
