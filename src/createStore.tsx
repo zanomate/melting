@@ -19,24 +19,24 @@ export const createStore = <S,A extends Action>(
     const Context = createContext<S>(undefined)
 
     const Store: StoreProvider<S,A> = (props: StoreProviderProps<S,A>) => {
-        const [store, dispatch] = useReducer(reducer, initialState)
+        const [data, dispatch] = useReducer(reducer, initialState)
 
-        const { store: customStore, dispatch: customDispatch, ...otherProps } = props;
+        const { data: customData, dispatch: customDispatch, ...otherProps } = props;
 
         const value: StoreContextValue<S,A> = useMemo(() => ({
-            store: customStore || store,
+            data: customData || data,
             dispatch: customDispatch || dispatch
-        }), [store, dispatch, customStore, customDispatch])
+        }), [data, dispatch, customData, customDispatch])
 
         return <Context.Provider value={value} {...otherProps} />
     }
 
     const useStore: StoreHook<S,A> = (selector) => {
-        const {store, dispatch} = useContext(Context)
+        const {data, dispatch} = useContext(Context)
         if (typeof selector === 'function') {
-            return {store: selector(store), dispatch}
+            return {data: selector(data), dispatch}
         }
-        return {store, dispatch}
+        return {data, dispatch}
     }
 
     return [Store, useStore]
@@ -49,12 +49,12 @@ export interface Action {
 export type StoreProvider<S,A extends Action> = React.FC<StoreProviderProps<S,A>>
 
 export interface StoreProviderProps<S,A extends Action> {
-    store?: S,
+    data?: S,
     dispatch?: Dispatch<ReducerAction<Reducer<S,A>>>
 }
 
 export interface StoreContextValue<S,A extends Action> {
-    store: S,
+    data: S,
     dispatch: Dispatch<ReducerAction<Reducer<S,A>>>
 }
 

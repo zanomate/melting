@@ -1,9 +1,14 @@
 # Melting
 
-> Global state manager for React, made with hooks and context
+Global state manager for React, made with hooks and context
 
 [![NPM](https://img.shields.io/npm/v/melting.svg)](https://www.npmjs.com/package/melting)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-typescript-brightgreen.svg)](https://standardjs.com)
+
+- [Install](#install)
+- [Usage](#usage)
+- [API](#api)
+- [Migrate from Redux](#migrate-from-redux)
 
 ## Install
 
@@ -18,6 +23,8 @@ Start using *Melting* in 3 simple steps:
 1. Create your own store provider and its corresponding hook with names you prefer.
 
     ```js
+    import { createStore } from 'melting'   
+ 
     const [ Store, useStore ] = createStore(storeReducer);
     ```
 
@@ -38,7 +45,7 @@ Start using *Melting* in 3 simple steps:
     ```js
     const MyInnerComponent = () => {
     
-       const { store, dispatch } = useStore()
+       const { data, dispatch } = useStore()
        
        const onClick = () => {
            dispatch({ type: 'YOUR_ACTION' })
@@ -46,7 +53,7 @@ Start using *Melting* in 3 simple steps:
     
        return (
            <>
-               <span>{store}</span>
+               <span>{data}</span>
                <button onClick={onClick}>
                    click here
                </button>
@@ -57,7 +64,7 @@ Start using *Melting* in 3 simple steps:
 
 ## API
 
-#### createStore
+#### createStore()
 
 Creates both a store provider and its corresponding hook.
 
@@ -75,8 +82,8 @@ Arguments:
 3. \[`enhancers`\] (function): The store enhancer. This parameter is **optional**. You may optionally specify it to enhance the store with third-party capabilities.
 
 Return an array containing 2 different objects:
-1. The first element is a custom store provider (see Store Provider)
-2. The second element is the corresponding custom hook. (see Store Consumer)
+1. The first element is a custom store provider (see [Store Provider](#store-provider))
+2. The second element is the corresponding custom hook. (see [Consumer Hook](#consumer-hook))
 
 You can name them as you prefer.
 
@@ -107,17 +114,17 @@ It is most commonly used for **testing** purpose.
 You can use this prop to force the providing of a custom dispatch function.
 It is most commonly used for **testing** purpose.
 
-#### Store Consumer (hook)
+#### Consumer Hook
 
-The Store Consumer hook is used to retrieve both the actual store state
+The Consumer Hook is used to retrieve both the actual store state
 and the dispatch function.
 
 ```js
-const { store, dispatch } = useStore()
+const { data, dispatch } = useStore()
 ```
 
 Returns an object containing two properties:
-- `store`: the actual store state or a selection of it (see below).
+- `data`: the actual store state or a selection of it (see below).
 - `dispatch`: the dispatch function, used to dispatch actions.
 
 Arguments:
@@ -125,9 +132,9 @@ Arguments:
 retrieve a custom section of the global store.
 
 ```js
-const { store } = useStore(store => store.counter)
+const { data } = useStore(store => store.counter)
 
-const { store } = useStore(store => ({
+const { data } = useStore(store => ({
   counter: store.counter,
   foo: store.other.foo
 }))
@@ -137,7 +144,7 @@ const { store } = useStore(store => ({
 
 Below the utilities provided with this library
 
-#### combineReducers
+#### combineReducers()
 
 Similar to Redux's combineReducers, it creates a new reducer starting from
 a map of reducers. The resulting function will be able to reduce a state
@@ -155,6 +162,89 @@ const todos = combineReducers({
   checked: checkedReducer
 })
 ```
+
+## Migrate from *'Redux'*
+
+If you want to rewrite your redux-based code using *Melting*, just take a look at
+the following:
+
+- **connect():** Forget it. You don't need to use any higher-order-component.
+    - mapStateToProps: this function is replaced by the selector parameter
+    of the consumer hook.
+        ```js
+        // retrieve the entire global store data
+        const { data } = useStore()
+      
+        // selector is like mapStateToProps
+        const selector = store => ({
+          foo: store.foo,
+          other: store.other.foo
+        })
+        // retrieve only selected data
+        const { data } = useStore(selector)
+        ```
+    - mapDispatchToProps: instead of creating this mapping, just use the dispatch function
+    retrieved from the consumer hook.
+        ```js
+        const { disaptch } = useStore()
+      
+        // this methods are like mapDispatchToProps
+        const action1 = () => {
+          dispatch({ type: 'ACTION 1' })
+        }
+  
+        const action2 = () => {
+          dispatch({ type: 'ACTION 2' })
+        }
+        ```
+
+- **Provider:** Just use the custom provider created by `createStore` without additional props (see [Store Provider](#store-provider)).
+
+- **createStore()**: This method has its homonym inside Melting, with exactly the same signature.
+Just remember that the *Melting* version returns two different objects instead the store (see [createStore](#create-store))
+
+- **Functional components:** Melting is based on hooks, so avoid writing components
+as class. If you need to write class components, probably *Melting* is not what you
+are looking for.
+
+    However, If you don't want to rewrite your existing class components, you can
+    use `StoreConsumer` component to manually retrieve the state inside render function.
+    
+    ```js
+    import { StoreConsumer } from 'melting'
+    import { MyStore } from 'my/store'  
+  
+    class MyClassComponent extends React.Component {
+      
+      onClick(dispatch) {
+        dispatch({ type: 'YOUR_ACTION' })
+      }
+  
+      render() {
+        return (
+          <StoreConsumer of={MyStore}>
+            {({ data, dispatch }) => {
+              return (
+                <>
+                  <span>{data}</span>
+                  <button onClick={() => this.onClick(dispatch)}>
+                    click here
+                  </button>
+                </>
+              )
+            }}
+          </StoreConsumer>
+        )
+      }
+    }
+    ```
+
+    Arguments:
+    
+    1\. `of` (object): The Store Provider for which we want to have a Consumer.  
+    2\. [`selector`\] (function): This parameter is **optional**. As for the
+    hook version this parameter is used to retrieve a custom section of the
+    global store.
 
 ## License
 
