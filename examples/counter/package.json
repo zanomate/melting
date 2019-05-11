@@ -1,7 +1,7 @@
 {
-  "name": "@melting/class-component",
+  "name": "@melting/counter",
   "version": "0.0.1",
-  "description": "Melting example",
+  "description": "Melting example: Counter",
   "scripts": {
     "start": "react-scripts start"
   },
@@ -11,7 +11,7 @@
   "author": "Zanomate <matteozanoncello.work@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "melting": "./node_modules/dist",
+      "melting": "1.1.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "^3.0.1"

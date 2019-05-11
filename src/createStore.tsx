@@ -16,10 +16,10 @@ export const createStore = <S,A extends Action>(
     const initialState = preloadedState || reducer(undefined, {type: undefined})
 
     // @ts-ignore
-    const Context = createContext<S>(undefined)
+    const Context: React.Context = createContext<S>(undefined)
 
-    const Store: StoreProvider<S,A> = (props: StoreProviderProps<S,A>) => {
-        const [data, dispatch] = useReducer(reducer, initialState)
+    let Store: any = (props: StoreProviderProps<S,A>) => {
+        let [data, dispatch] = useReducer(reducer, initialState)
 
         const { data: customData, dispatch: customDispatch, ...otherProps } = props;
 
@@ -30,6 +30,7 @@ export const createStore = <S,A extends Action>(
 
         return <Context.Provider value={value} {...otherProps} />
     }
+    Store.context = Context
 
     const useStore: StoreHook<S,A> = (selector) => {
         const {data, dispatch} = useContext(Context)
@@ -46,7 +47,9 @@ export interface Action {
     type: string
 }
 
-export type StoreProvider<S,A extends Action> = React.FC<StoreProviderProps<S,A>>
+export type StoreProvider<S,A extends Action> = React.FC<StoreProviderProps<S,A>> & {
+    context: React.Context<StoreContextValue<S,A>>
+}
 
 export interface StoreProviderProps<S,A extends Action> {
     data?: S,
